@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - ExcelR Blog</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* ===================== ORIGINAL CSS (UNCHANGED) ===================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            font-family: 'Poppins', sans-serif !important;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            min-height: 100vh !important;
+            position: relative;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.3) 0%, transparent 50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1) !important;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+            padding: 15px 0 !important;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-size: 2rem !important;
+            color: #667eea !important;
+            text-decoration: none !important;
+        }
+
+        .navbar-brand i {
+            color: #667eea !important;
+        }
+
+        .nav-link {
+            color: #333 !important;
+            font-weight: 500 !important;
+            margin: 0 10px !important;
+            padding: 8px 20px !important;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            text-decoration: none !important;
+        }
+
+        .nav-link:hover {
+            color: #667eea !important;
+            text-decoration: none !important;
+        }
+
+        .register-container {
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            min-height: calc(100vh - 200px);
+        }
+
+        .register-card {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-radius: 20px !important;
+            padding: 50px 40px !important;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+            border: 1px solid rgba(255, 255, 255, 0.5) !important;
+            width: 100%;
+            max-width: 500px;
+            animation: fadeInUp 0.8s ease;
+            position: relative;
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .register-header i {
+            font-size: 4rem;
+            color: #667eea;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        .register-header h2 {
+            color: #333 !important;
+            font-weight: 700 !important;
+            font-size: 2rem !important;
+            margin-bottom: 10px !important;
+        }
+
+        .register-header p {
+            color: #888 !important;
+            font-size: 0.95rem !important;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .form-group .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 42px;
+            color: #667eea;
+            font-size: 1.1rem;
+            z-index: 1;
+        }
+
+        .form-group input {
+            width: 100% !important;
+            padding: 14px 14px 14px 45px !important;
+            border: 2px solid #e0e0e0 !important;
+            border-radius: 12px !important;
+            font-size: 1rem !important;
+            transition: all 0.3s ease !important;
+            background: #f8f9fa !important;
+            font-family: 'Poppins', sans-serif !important;
+            box-sizing: border-box !important;
+        }
+
+        .form-group input:focus {
+            border-color: #667eea !important;
+            background: #fff !important;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1) !important;
+            outline: none !important;
+        }
+
+        .register-btn {
+            width: 100% !important;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            border: none !important;
+            border-radius: 12px !important;
+            padding: 16px !important;
+            color: white !important;
+            font-weight: 600 !important;
+            font-size: 1.1rem !important;
+            cursor: pointer;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4) !important;
+            margin-top: 10px !important;
+            font-family: 'Poppins', sans-serif !important;
+        }
+
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6) !important;
+        }
+
+        .error-message {
+            background: rgba(220, 53, 69, 0.1) !important;
+            color: #dc3545 !important;
+            padding: 12px 15px !important;
+            border-radius: 10px !important;
+            text-align: center !important;
+            margin-bottom: 20px !important;
+            border: 1px solid rgba(220, 53, 69, 0.3) !important;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .login-link p {
+            color: #666 !important;
+            font-size: 0.95rem !important;
+            margin-bottom: 0 !important;
+        }
+
+        .login-link a {
+            color: #667eea !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            transition: all 0.3s ease;
+        }
+
+        .login-link a:hover {
+            color: #764ba2 !important;
+            text-decoration: none !important;
+        }
+
+        .footer {
+            background: rgba(0, 0, 0, 0.3) !important;
+            backdrop-filter: blur(10px);
+            color: white !important;
+            padding: 30px 0 !important;
+            text-align: center !important;
+            margin-top: auto;
+            width: 100%;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* ===================== ADDED CINEMATIC DARK + NETFLIX HOVER ===================== */
+
+        html, body {
+            background: radial-gradient(circle at top, #2b2d42, #0f1020) !important;
+            color: #e5e7eb !important;
+        }
+
+        .navbar {
+            background: rgba(20,22,40,0.9) !important;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.6) !important;
+            border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+        }
+
+        .navbar-brand,
+        .nav-link {
+            color: #c7bfff !important;
+        }
+
+        .nav-link:hover {
+            color: #a78bfa !important;
+        }
+
+        .register-card {
+            background: linear-gradient(145deg, #1a1c2c, #141625) !important;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.75) !important;
+            border: 1px solid rgba(255,255,255,0.08) !important;
+        }
+
+        .register-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top, rgba(167,139,250,0.25), transparent 70%);
+            opacity: 0;
+            transition: 0.4s;
+            pointer-events: none;
+        }
+
+        .register-card:hover::after {
+            opacity: 1;
+        }
+
+        .register-header h2 { color: #f1f5f9 !important; }
+        .register-header p { color: #cbd5f5 !important; }
+        .register-header i { color: #a78bfa !important; }
+
+        .form-group label { color: #cbd5f5 !important; }
+        .form-group .input-icon { color: #a78bfa !important; }
+
+        .form-group input {
+            background: #0f1020 !important;
+            border: 1px solid #2a2d55 !important;
+            color: #e5e7eb !important;
+        }
+
+        .form-group input::placeholder { color: #9ca3af !important; }
+
+        .form-group input:focus {
+            border-color: #a78bfa !important;
+            box-shadow: 0 0 0 4px rgba(167,139,250,0.25) !important;
+        }
+
+        .register-btn {
+            background: linear-gradient(135deg, #a78bfa, #7c7cf6) !important;
+            color: #0f1020 !important;
+            border-radius: 30px !important;
+        }
+
+        .register-btn:hover {
+            animation: netflixPulse 1.6s infinite;
+        }
+
+        @keyframes netflixPulse {
+            0% { box-shadow: 0 0 0 0 rgba(167,139,250,0.6); }
+            70% { box-shadow: 0 0 0 16px rgba(167,139,250,0); }
+            100% { box-shadow: 0 0 0 0 rgba(167,139,250,0); }
+        }
+
+        .footer {
+            background: rgba(15,16,32,0.9) !important;
+            color: #9ca3af !important;
+        }
+
+        .footer a {
+            color: #c7bfff !important;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <i class="fas fa-blog"></i>
+        </a>
+        <div class="navbar-nav ml-auto">
+            <a class="nav-link" th:href="@{/}">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a class="nav-link" href="#" style="color:#a78bfa !important;">
+                <i class="fas fa-user-plus"></i> Register
+            </a>
+            <a class="nav-link" th:href="@{/login}">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="register-container">
+    <div class="register-card">
+
+        <div class="register-header">
+            <i class="fas fa-user-plus"></i>
+            <h2>Create Account</h2>
+            <p>Join us and start sharing your thoughts</p>
+        </div>
+
+        <div class="error-message" th:if="${error}" th:text="${error}"></div>
+
+        <form th:action="@{/register}" th:object="${user}" method="post">
+
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> First Name</label>
+                <i class="fas fa-user input-icon"></i>
+                <input type="text" th:field="*{fname}" placeholder="Enter your first name" required />
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> Last Name</label>
+                <i class="fas fa-user input-icon"></i>
+                <input type="text" th:field="*{lname}" placeholder="Enter your last name" required />
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Email</label>
+                <i class="fas fa-envelope input-icon"></i>
+                <input type="email" th:field="*{email}" placeholder="Enter your email" required />
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-lock"></i> Password</label>
+                <i class="fas fa-lock input-icon"></i>
+                <input type="password" th:field="*{pwd}" placeholder="Enter your password" required />
+            </div>
+
+            <button type="submit" class="register-btn">
+                <i class="fas fa-user-plus"></i> Register
+            </button>
+        </form>
+
+        <div class="login-link">
+            <p>Already registered?
+                <a th:href="@{/login}">Login here <i class="fas fa-arrow-right"></i></a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <p>Copyright © 2023
+            <a href="#" style="color:#c7bfff;">karthikTalabathula</a>.
+            All rights reserved.
+        </p>
+    </div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
