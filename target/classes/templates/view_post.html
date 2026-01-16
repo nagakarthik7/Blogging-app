@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${post.title}">ExcelR Blog</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            font-family: 'Poppins', sans-serif !important;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            min-height: 100vh !important;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.3) 0%, transparent 50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1) !important;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+            padding: 15px 0 !important;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-size: 2rem !important;
+            color: #667eea !important;
+            text-decoration: none !important;
+        }
+
+        .nav-link {
+            color: #333 !important;
+            font-weight: 500 !important;
+            margin: 0 10px !important;
+            padding: 8px 20px !important;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            text-decoration: none !important;
+        }
+
+        .nav-link:hover {
+            color: #667eea !important;
+            text-decoration: none !important;
+        }
+
+        .main-container {
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            padding: 40px 20px;
+        }
+
+        .post-card {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-radius: 20px !important;
+            padding: 50px 40px !important;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+            border: 1px solid rgba(255, 255, 255, 0.5) !important;
+            margin-bottom: 30px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .post-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+
+        .post-content {
+            color: #555;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .post-meta {
+            color: #888;
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .comments-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .comments-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 25px;
+        }
+
+        .comment-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .comment-content {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .comment-form-card {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-radius: 20px !important;
+            padding: 30px !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+            margin-top: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100% !important;
+            padding: 12px 15px !important;
+            border: 2px solid #e0e0e0 !important;
+            border-radius: 10px !important;
+            font-size: 1rem !important;
+            transition: all 0.3s ease !important;
+            font-family: 'Poppins', sans-serif !important;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #667eea !important;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+            outline: none !important;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            border: none !important;
+            border-radius: 10px !important;
+            padding: 12px 30px !important;
+            color: white !important;
+            font-weight: 600 !important;
+            cursor: pointer;
+            transition: all 0.3s ease !important;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4) !important;
+        }
+
+        .no-comment-message {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 10px;
+            color: #856404;
+        }
+
+        .footer {
+            background: rgba(0, 0, 0, 0.3) !important;
+            backdrop-filter: blur(10px);
+            color: white !important;
+            padding: 30px 0 !important;
+            text-align: center !important;
+            margin-top: auto;
+            width: 100%;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* ===== CINEMATIC DARK PASTEL OVERRIDES ===== */
+
+html, body {
+    background: radial-gradient(circle at top, #2b2d42, #0f1020) !important;
+    color: #e5e7eb !important;
+}
+
+/* NAVBAR */
+.navbar {
+    background: rgba(20,22,40,0.9) !important;
+    backdrop-filter: blur(12px) !important;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6) !important;
+}
+
+.navbar-brand {
+    font-family: 'Playfair Display', serif !important;
+    font-weight: 700 !important;
+    color: #c7bfff !important;
+}
+
+.navbar-brand i {
+    color: #c7bfff !important;
+}
+
+.nav-link {
+    color: #d1d5db !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-link::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 6px;
+    width: 0;
+    height: 2px;
+    background: #a78bfa;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-link:hover::after {
+    width: 60%;
+}
+
+/* CARDS – NETFLIX FLOAT */
+.register-card,
+.login-card,
+.form-card,
+.comments-card,
+.post-card,
+.blog-card {
+    background: linear-gradient(145deg, #1a1c2c, #141625) !important;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.7) !important;
+    border: 1px solid rgba(167,139,250,0.15) !important;
+}
+
+.register-card:hover,
+.login-card:hover,
+.form-card:hover,
+.comments-card:hover,
+.post-card:hover,
+.blog-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    transition: 0.35s ease;
+}
+
+/* INPUTS */
+input, textarea {
+    background: #0f1020 !important;
+    border: 1px solid #2a2d55 !important;
+    color: #e5e7eb !important;
+}
+
+input:focus, textarea:focus {
+    border-color: #a78bfa !important;
+    box-shadow: 0 0 0 4px rgba(167,139,250,0.25) !important;
+}
+
+/* BUTTONS – NETFLIX PULSE */
+button,
+.register-btn,
+.login-btn,
+.submit-btn,
+.search-btn {
+    background: linear-gradient(135deg, #a78bfa, #7c7cf6) !important;
+    color: #0f1020 !important;
+    font-weight: 600 !important;
+}
+
+button:hover,
+.register-btn:hover,
+.login-btn:hover,
+.submit-btn:hover,
+.search-btn:hover {
+    animation: netflixPulse 1.6s infinite;
+}
+
+@keyframes netflixPulse {
+    0% { box-shadow: 0 0 0 0 rgba(167,139,250,0.6); }
+    70% { box-shadow: 0 0 0 14px rgba(167,139,250,0); }
+    100% { box-shadow: 0 0 0 0 rgba(167,139,250,0); }
+}
+
+/* FOOTER */
+.footer {
+    background: rgba(15,16,32,0.95) !important;
+    color: #9ca3af !important;
+}
+
+.footer a {
+    color: #c7bfff !important;
+}
+
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-blog"></i>
+            </a>
+            <div class="navbar-nav ml-auto">
+                <a class="nav-link" th:href="@{/}">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a class="nav-link" th:href="@{/register}">
+                    <i class="fas fa-user-plus"></i> Register
+                </a>
+                <a class="nav-link" th:href="@{/login}">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container main-container">
+        <div class="post-card">
+            <h1 class="post-title" th:text="${post.title}">Post Title</h1>
+            <div class="post-meta">
+                <i class="far fa-calendar-alt"></i>
+                <span th:text="${#temporals.format(post.createdOn, 'dd MMMM yyyy')}">Date</span>
+            </div>
+            <div class="post-content" th:utext="${post.content}">Post Content</div>
+
+            <!-- Save Post Section -->
+            <div th:if="${user != null}" style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px; text-align: center;">
+                <form th:action="@{/save/{id}(id=${post.id})}" method="post" style="display: inline;" 
+                      th:if="${!isSaved}">
+                    <button type="submit" class="save-btn" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border: none; padding: 12px 30px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
+                        <i class="far fa-bookmark"></i> Save for Later
+                    </button>
+                </form>
+                <form th:action="@{/unsave/{id}(id=${post.id})}" method="post" style="display: inline;" 
+                      th:if="${isSaved}">
+                    <button type="submit" class="unsave-btn" style="background: #6c757d; color: white; border: none; padding: 12px 30px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
+                        <i class="fas fa-bookmark"></i> Remove from Saved
+                    </button>
+                </form>
+            </div>
+
+            <div class="comments-section">
+                <h3 class="comments-title"><i class="fas fa-comments"></i> Comments</h3>
+                
+                <div th:if="${#lists.isEmpty(comments)}" class="no-comment-message">
+                    <i class="fas fa-info-circle"></i> No comments yet. Be the first to comment!
+                </div>
+
+                <div th:each="comment : ${comments}" class="comment-card">
+                    <div class="comment-author">
+                        <i class="fas fa-user"></i>
+                        <span th:text="${comment.name}">User</span>
+                    </div>
+                    <div class="comment-content" th:text="${comment.content}">Comment Content</div>
+                </div>
+
+                <!-- Add Comment Form -->
+                <div th:if="${user != null and user.id != post.user.id}" class="comment-form-card">
+                    <h4 style="margin-bottom: 20px; color: #333;"><i class="fas fa-comment-dots"></i> Add a Comment</h4>
+                    <form th:action="@{/comment/{postId}(postId=${post.id})}" th:object="${commentObj}" method="post">
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> Name</label>
+                            <input type="text" th:field="*{name}" placeholder="Your name" required />
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-envelope"></i> Email</label>
+                            <input type="email" th:field="*{email}" placeholder="Your email" required />
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-comment"></i> Comment</label>
+                            <textarea th:field="*{content}" placeholder="Write your comment..." rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-paper-plane"></i> Submit Comment
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Author can't comment -->
+                <div th:if="${user != null and user.id == post.user.id}" class="no-comment-message">
+                    <i class="fas fa-info-circle"></i> You cannot comment on your own post.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>Copyright © 2023 <a href="#" style="color: #fff;">karthikTalabathulaß</a>. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
